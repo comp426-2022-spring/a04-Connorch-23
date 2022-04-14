@@ -32,11 +32,36 @@ const app = express()
 const morgan = require('morgan')
 const fs = require('fs')
 const logdb = require('./database')
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 // Use morgan for logging to files
 // Create a write stream to append to an access.log file
 const accessLog = fs.createWriteStream('access.log', { flags: 'a' })
 // Set up the access logging middleware
 app.use(morgan('combined', { stream: accessLog }))
+
+
+app.use( (req, res, next) => {
+  let logdata = {
+    remote_addr: req.ip,
+    remote_user: req.user,
+    date: Date.now(),
+    method: req.method,
+    url: req.url,
+    protocol: req.protocol,
+    http_version: req.httpVersion,
+    status: res.statusCode,
+    referer: req.headers['referer'],
+    user_agent: req.headers['user-agent']
+}
+
+const stmt = logdb.prepare('INSERT INTO accesslog (remote_addr, remote_user, date, method, url, protocol, http_version, status, referer, user_agent) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)')
+stmt.run(logdata.remote_addr, logdata.remote_user, logdata.time, logdata.method, logdata.url,
+   logdata.protocol, logdata.http_version, logdata.status, logdata.referer, logdata.user_agent)
+   
+  next()
+})
+
 
 // Coin flip functions 
  {
@@ -160,11 +185,15 @@ app.use(morgan('combined', { stream: accessLog }))
 
 // Endpoints
 
+
+
 const server = app.listen(port, () => {
     console.log('App listening on port %PORT'.replace('%PORT',port))
 });
 
 
+// Coin Endpoints
+{
 app.get('/app/', (req,res) => {
     res.writeHead( res.statusCode, { 'Content-Type' : 'text/plain' });
     res.statusMessage = 'OK';
@@ -188,7 +217,7 @@ app.get('/app/flips/:number', (req,res) => {
 app.get('/app/echo/:number', (req,res) => {
     res.status(200).json({ 'message': req.params.number })
 })
-
+}
 app.use(function(req,res) {
   res.type("text/plain")
     res.status( 404).send("404 Not found")
