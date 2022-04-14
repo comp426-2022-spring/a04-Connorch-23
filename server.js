@@ -25,10 +25,22 @@ if (args.help || args.h) {
     process.exit(0)
 }
 
+
+
 const express = require('express');
 const app = express()
+const morgan = require('morgan')
+const fs = require('fs')
+const logdb = require('./database')
+// Use morgan for logging to files
+// Create a write stream to append to an access.log file
+const accessLog = fs.createWriteStream('access.log', { flags: 'a' })
+// Set up the access logging middleware
+app.use(morgan('combined', { stream: accessLog }))
 
-/** Coin flip functions 
+// Coin flip functions 
+ {
+ /*
  * This module will emulate a coin flip given various conditions as parameters as defined below
  */
 
@@ -144,9 +156,9 @@ const app = express()
   
     return game;
   }
-  
+}
 
-
+// Endpoints
 
 const server = app.listen(port, () => {
     console.log('App listening on port %PORT'.replace('%PORT',port))
