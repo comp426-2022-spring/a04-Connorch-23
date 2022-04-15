@@ -32,31 +32,33 @@ const app = express()
 const morgan = require('morgan')
 const fs = require('fs')
 const logdb = require('./database')
+const { loadExtension } = require("./database")
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+if (!args.log) {
 // Use morgan for logging to files
 // Create a write stream to append to an access.log file
 const accessLog = fs.createWriteStream('access.log', { flags: 'a' })
 // Set up the access logging middleware
 app.use(morgan('combined', { stream: accessLog }))
-
+}
 
 app.use( (req, res, next) => {
   let logdata = {
-    remoteaddr: req.ip,
-    remoteuser: req.user,
+    remote_addr: req.ip,
+    remote_user: req.user,
     time: Date.now(),
     method: req.method,
     url: req.url,
     protocol: req.protocol,
-    httpversion: req.httpVersion,
+    http_version: req.httpVersion,
     status: res.statusCode,
     referer: req.headers['referer'],
-    useragent: req.headers['user-agent']
+    user_agent: req.headers['user-agent']
 }
 
-const stmt = logdb.prepare('INSERT INTO accesslog (remoteaddr, remoteuser, time, method, url, protocol, httpversion, status, referer, useragent) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)')
-const info = stmt.run(logdata.remoteaddr, logdata.remoteuser, logdata.time, logdata.method, logdata.url,logdata.protocol, logdata.httpversion, logdata.status, logdata.referer, logdata.useragent)
+const stmt = logdb.prepare('INSERT INTO accesslog (remote_addr, remote_user, time, method, url, http_version, status, referer, user_agent) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)')
+const info = stmt.run(logdata.remote_addr, logdata.remote_user, logdata.time, logdata.method, logdata.url, logdata.http_version, logdata.status, logdata.referer, logdata.user_agent)
   next()
 })
 
@@ -184,9 +186,14 @@ const info = stmt.run(logdata.remoteaddr, logdata.remoteuser, logdata.time, logd
 // Endpoints
 if (args.debug == true) {
   app.get("/app/log/access/", (req, res) => {
-    const stmt = db.prepare('SELECT * FROM accesslog').all()
+    const stmt = logdb.prepare('SELECT * FROM accesslog').all()
     res.status(200).json(stmt)
   })
+
+  app.get('app/error', (req,res) => {
+    throw new Error('Broken')
+  })
+
 }
 
 const server = app.listen(port, () => {
