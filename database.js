@@ -19,7 +19,7 @@ if (row === undefined) {
             httpversion NUMERIC, 
             status INTEGER, 
             referrer VARCHAR,
-            useragent TEVARCHARXT
+            useragent VARCHAR
         );
     `
 

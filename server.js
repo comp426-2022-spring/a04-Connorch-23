@@ -2,7 +2,7 @@ const args = require("minimist")(process.argv.slice(2))
 args["port"]
 const port = args.port || process.env.PORT || 3000
 
-console.log(args)
+//console.log(args)
 const help = (`
 server.js [options]
 
@@ -182,8 +182,12 @@ const info = stmt.run(logdata.remoteaddr, logdata.remoteuser, logdata.time, logd
 }
 
 // Endpoints
-
-
+if (args.debug == true) {
+  app.get("/app/log/access/", (req, res) => {
+    const stmt = db.prepare('SELECT * FROM accesslog').all()
+    res.status(200).json(stmt)
+  })
+}
 
 const server = app.listen(port, () => {
     console.log('App listening on port %PORT'.replace('%PORT',port))
