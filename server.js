@@ -43,22 +43,20 @@ app.use(morgan('combined', { stream: accessLog }))
 
 app.use( (req, res, next) => {
   let logdata = {
-    remote_addr: req.ip,
-    remote_user: req.user,
-    date: Date.now(),
+    remoteaddr: req.ip,
+    remoteuser: req.user,
+    time: Date.now(),
     method: req.method,
     url: req.url,
     protocol: req.protocol,
-    http_version: req.httpVersion,
+    httpversion: req.httpVersion,
     status: res.statusCode,
     referer: req.headers['referer'],
-    user_agent: req.headers['user-agent']
+    useragent: req.headers['user-agent']
 }
 
-const stmt = logdb.prepare('INSERT INTO accesslog (remote_addr, remote_user, date, method, url, protocol, http_version, status, referer, user_agent) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)')
-stmt.run(logdata.remote_addr, logdata.remote_user, logdata.time, logdata.method, logdata.url,
-   logdata.protocol, logdata.http_version, logdata.status, logdata.referer, logdata.user_agent)
-   
+const stmt = logdb.prepare('INSERT INTO accesslog (remoteaddr, remoteuser, time, method, url, protocol, httpversion, status, referer, useragent) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)')
+const info = stmt.run(logdata.remoteaddr, logdata.remoteuser, logdata.time, logdata.method, logdata.url,logdata.protocol, logdata.httpversion, logdata.status, logdata.referer, logdata.useragent)
   next()
 })
 

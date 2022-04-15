@@ -8,18 +8,18 @@ if (row === undefined) {
     console.log('Log database appears to be empty. Creating log database...')
 
     const sqlInit = `
-        CREATE TABLE accessLog ( 
-            id INTEGER PRIMARY KEY, 
-            remote_addr VARCHAR, 
-            remote_user VARCHAR, 
-            date VARCHAR, 
+        CREATE TABLE accessLog (   
+            id INTEGER PRIMARY KEY,
+            remoteaddr VARCHAR, 
+            remoteuser VARCHAR, 
+            time VARCHAR, 
             method VARCHAR, 
             url VARCHAR, 
-            http_version NUMERIC, 
+            protocol VARCHAR,
+            httpversion NUMERIC, 
             status INTEGER, 
-            content_length NUMERIC,
-            referrer_url VARCHAR,
-            user_agent VARCHAR
+            referrer VARCHAR,
+            useragent TEVARCHARXT
         );
     `
 
