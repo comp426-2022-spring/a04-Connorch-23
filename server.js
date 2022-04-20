@@ -1,6 +1,6 @@
 const args = require("minimist")(process.argv.slice(2))
 args["port"]
-const port = args.port || process.env.PORT || 3000
+const port = args.port || process.env.PORT || 5000
 
 //console.log(args)
 const help = (`
@@ -47,7 +47,7 @@ app.use( (req, res, next) => {
   let logdata = {
     remote_addr: req.ip,
     remote_user: req.user,
-    time: Date.now(),
+    date: Date.now(),
     method: req.method,
     url: req.url,
     protocol: req.protocol,
@@ -57,8 +57,8 @@ app.use( (req, res, next) => {
     user_agent: req.headers['user-agent']
 }
 
-const stmt = logdb.prepare('INSERT INTO accesslog (remote_addr, remote_user, time, method, url, http_version, status, referer, user_agent) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)')
-const info = stmt.run(logdata.remote_addr, logdata.remote_user, logdata.time, logdata.method, logdata.url, logdata.http_version, logdata.status, logdata.referer, logdata.user_agent)
+const stmt = logdb.prepare('INSERT INTO accesslog (remote_addr, remote_user, date, method, url, http_version, status, referer, user_agent) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)')
+const info = stmt.run(logdata.remote_addr, logdata.remote_user, logdata.date, logdata.method, logdata.url, logdata.http_version, logdata.status, logdata.referer, logdata.user_agent)
   next()
 })
 
