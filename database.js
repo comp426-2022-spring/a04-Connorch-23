@@ -9,16 +9,16 @@ if (row === undefined) {
 
     const sqlInit = `
         CREATE TABLE accesslog (   
-            id INTEGER PRIMARY KEY,
-            remote_addr VARCHAR, 
-            remote_user VARCHAR,
-            date VARCHAR,
-            method VARCHAR
-            url VARCHAR,
-            http_version NUMERIC, 
-            status INTEGER,
-            referer VARCHAR,
-            user_agent VARCHAR
+            id TEXT PRIMARY KEY,
+            remote_addr TEXT, 
+            remote_user TEXT,
+            date TEXT,
+            method TEXT
+            url TEXT,
+            http_version TEXT, 
+            status TEXT,
+            referer TEXT,
+            user_agent TEXT
         );
     `
 
