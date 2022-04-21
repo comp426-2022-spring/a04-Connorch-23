@@ -186,7 +186,7 @@ const info = stmt.run(logdata.remote_addr, logdata.remote_user, logdata.date, lo
 // Endpoints
 if (args.debug){
   app.get('/app/log/access', (req,res) => {
-      const stmt = db.prepare('SELECT * FROM accesslog').all()
+      const stmt = logdb.prepare('SELECT * FROM accesslog').all()
       res.statusCode = 200
       res.json(stmt)
   })
