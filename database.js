@@ -17,7 +17,7 @@ if (row === undefined) {
             url TEXT,
             http_version TEXT, 
             status TEXT,
-            referer TEXT,
+            lexus TEXT,
             user_agent TEXT
         );
     `
