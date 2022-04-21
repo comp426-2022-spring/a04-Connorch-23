@@ -184,16 +184,16 @@ const info = stmt.run(logdata.remote_addr, logdata.remote_user, logdata.date, lo
 }
 
 // Endpoints
-if (args.debug == true) {
-  app.get("/app/log/access/", (req, res) => {
-    const stmt = logdb.prepare('SELECT * FROM accesslog').all()
-    res.status(200).json(stmt)
+if (args.debug){
+  app.get('/app/log/access', (req,res) => {
+      const stmt = db.prepare('SELECT * FROM accesslog').all()
+      res.statusCode = 200
+      res.json(stmt)
   })
-
-  app.get('app/error', (req,res) => {
-    throw new Error('Broken')
+  
+  app.get('/app/error', (req,res) => {
+      throw new Error('Error test successful')
   })
-
 }
 
 const server = app.listen(port, () => {
